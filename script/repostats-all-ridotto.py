@@ -30,12 +30,12 @@ def save(out_file_name, repositories, fieldnames):
     with open(out_file_name, "w") as outfilecsv:
         writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
-        for data in repositories[:21]:
+        for data in repositories[:22]:
             writer.writerow(data)
 
 
 def stats(repositories):
-    for data in repositories[:21]:
+    for data in repositories[:22]:
         if 'https://github.com/' in data['git']:
             repo = data['git'].rsplit("/", 2)
             user = repo[1]
@@ -63,13 +63,15 @@ def stats(repositories):
 
 
 def clone(repositories):
-    for row in repositories[:21]:
+    for row in repositories[:22]:
         if row['cloned'] == 0:
             parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
             directory = row['name']
             path = os.path.join(parent_dir, directory)
         # if row['cloned'] == 0:
-            if 'https://github.com/' or 'https://git.savannah.gnu.org/' in row['git']:
+            if 'https://sourceforge.net/' in row['git']:
+                next(iter(row))
+            elif 'https://github.com/' or 'https://git.savannah.gnu.org/' in row['git']:
                 os.mkdir(path)
                 Repo.clone_from(row['git'], path)
                 row['cloned'] = 1
@@ -78,8 +80,6 @@ def clone(repositories):
                 output = proc.stdout.read()
                 loc = json.loads(output)
                 row['lines_of_code'] = loc['SUM']['code']
-            elif 'https://sourceforge.net/' in row['git']:
-                row += 1
             # writer.writerow({'name': row['name'], 'git': row['git'], 'cloned': row['cloned']})
             # shutil.move(tempfile.name, filename)
             # i += 1
@@ -94,19 +94,19 @@ def clone(repositories):
 
 
 def main():
-    # parser = init_argparser()
-    # args = parser.parse_args()
-    inputcsv = '/home/ale/tesi/cli-apps/data/apps.csv'
-    outcsv = '/home/ale/tesi/cli-apps-web-interface/stats-ridotto.csv'
-    # repositories = load(args.inputfile)
-    # clone(repositories)
-    repositories = load(inputcsv)
+    parser = init_argparser()
+    args = parser.parse_args()
+    # inputcsv = '/home/ale/tesi/cli-apps/data/apps.csv'
+    # outcsv = '/home/ale/tesi/cli-apps-web-interface/stats-ridotto.csv'
+    repositories = load(args.inputfile)
     clone(repositories)
+    # repositories = load(inputcsv)
+    # clone(repositories)
     # if is_github_repo(repositories):
     stats(repositories)
     fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code']
-    # save(args.outfile, repositories, fieldnames)
-    save(outcsv, repositories, fieldnames)
+    save(args.outfile, repositories, fieldnames)
+    # save(outcsv, repositories, fieldnames)
 
 
 if __name__ == "__main__":
