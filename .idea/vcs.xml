@@ -3,6 +3,29 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/repositories" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/jed" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/GoTTY" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/Tmate" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/WordGrinder" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/bpytop" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/byobu" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/cv" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/glances" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/htop" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/inxi" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/iotop" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/micro" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/multitail" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/neovim" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/ngrep" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/powertop" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/progress" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/screen" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/slap" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/sysdig" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/tmux" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/vai" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/vim" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/vis" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/warp" vcs="Git" />
   </component>
 </project>
