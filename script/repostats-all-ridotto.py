@@ -30,18 +30,18 @@ def save(out_file_name, repositories, fieldnames):
     with open(out_file_name, "w") as outfilecsv:
         writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
-        for data in repositories[23:48]:
+        for data in repositories[891:898]:
             writer.writerow(data)
 
 
 def stats(repositories):
-    for data in repositories[23:48]:
+    for data in repositories[891:898]:
         if 'https://github.com/' in data['git']:
             repo = data['git'].rsplit("/", 2)
             user = repo[1]
             project = repo[2]
             proc = subprocess.Popen(["curl", f"https://api.github.com/repos/{user}/{project}"], stdout=subprocess.PIPE)
-            # print(project)
+            print(project)
             output = proc.stdout.read()
             stat = json.loads(output)
             # input()
@@ -65,7 +65,7 @@ def stats(repositories):
 
 
 def clone(repositories):
-    for row in repositories[23:48]:
+    for row in repositories[891:898]:
         if row['cloned'] == 0:
             parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
             directory = row['name']
@@ -74,6 +74,10 @@ def clone(repositories):
             if 'https://sourceforge.net/' in row['git']:
                 next(iter(row))
             elif 'https://selenic.com/' in row['git']:
+                next(iter(row))
+            elif row['git'] == '':
+                next(iter(row))
+            elif 'https://www.mercurial-scm.org/' in row['git']:
                 next(iter(row))
             elif 'https://github.com/' or 'https://git.savannah.gnu.org/' in row['git']:
                 os.mkdir(path)
