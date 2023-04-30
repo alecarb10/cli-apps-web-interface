@@ -11,7 +11,7 @@ import subprocess
 def init_argparser():
     parser = argparse.ArgumentParser()
     parser.add_argument('inputfile', action="store", type=str)
-    parser.add_argument('outfile', action="store", type=str)
+    parser.add_argument('-o', '--outfile', nargs='?', action="store", type=str)
     return parser
 
 
@@ -30,12 +30,12 @@ def save(out_file_name, repositories, fieldnames):
     with open(out_file_name, "w") as outfilecsv:
         writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
-        for data in repositories[891:898]:
+        for data in repositories[:10]:
             writer.writerow(data)
 
 
 def stats(repositories):
-    for data in repositories[891:898]:
+    for data in repositories[:10]:
         if 'https://github.com/' in data['git']:
             repo = data['git'].rsplit("/", 2)
             user = repo[1]
@@ -65,7 +65,7 @@ def stats(repositories):
 
 
 def clone(repositories):
-    for row in repositories[891:898]:
+    for row in repositories[:10]:
         if row['cloned'] == 0:
             parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
             directory = row['name']
