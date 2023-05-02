@@ -93,8 +93,12 @@ def clone(repositories):
             # i += 1
 
         else:
+            parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
+            directory = row['name']
+            path = os.path.join(parent_dir, directory)
             g = git.Repo(path)
             g.remotes.origin.pull()
+            print(row['name'] + ': pull eseguito')
             proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
             output = proc.stdout.read()
             loc = json.loads(output)
