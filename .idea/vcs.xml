@@ -3,15 +3,9 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/repositories" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/PSSH" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/ack" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/ag" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/geoiplookup" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/h-m-m" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/ipcalc" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/paragrep" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/quickserve" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/rtop" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/repositories/sift" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/jed" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/micro" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/nano" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/neovim" vcs="Git" />
   </component>
 </project>

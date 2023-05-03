@@ -30,30 +30,29 @@ def save(out_file_name, repositories, fieldnames):
     with open(out_file_name, "w") as outfilecsv:
         writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
-        for data in repositories[:10]:
+        for data in repositories[20:25]:
             writer.writerow(data)
 
 
-def stats(repositories):
-    for data in repositories[:10]:
-        if 'https://github.com/' in data['git']:
-            repo = data['git'].rsplit("/", 2)
-            user = repo[1]
-            project = repo[2]
-            proc = subprocess.Popen(["curl", f"https://api.github.com/repos/{user}/{project}"], stdout=subprocess.PIPE)
-            print(project)
-            output = proc.stdout.read()
-            stat = json.loads(output)
-            # input()
-            # print(project)
-            # print(stat['stargazers_count'])
-            data['stars'] = stat["stargazers_count"]
-            data['watch'] = stat["subscribers_count"]
-            data['fork'] = stat["forks_count"]
-        else:
-            data['stars'] = '/'
-            data['watch'] = '/'
-            data['fork'] = '/'
+def stats(row):
+    if 'https://github.com/' in row['git']:
+        repo = row['git'].rsplit("/", 2)
+        user = repo[1]
+        project = repo[2]
+        proc = subprocess.Popen(["curl", f"https://api.github.com/repos/{user}/{project}"], stdout=subprocess.PIPE)
+        print(project)
+        output = proc.stdout.read()
+        stat = json.loads(output)
+        # input()
+        # print(project)
+        # print(stat['stargazers_count'])
+        row['stars'] = stat["stargazers_count"]
+        row['watch'] = stat["subscribers_count"]
+        row['fork'] = stat["forks_count"]
+    else:
+        row['stars'] = '/'
+        row['watch'] = '/'
+        row['fork'] = '/'
 
 
 # def is_github_repo(repositories):
@@ -65,19 +64,23 @@ def stats(repositories):
 
 
 def clone(repositories):
-    for row in repositories[:10]:
+    for row in repositories[20:25]:
         if row['cloned'] == 0:
             parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
             directory = row['name']
             path = os.path.join(parent_dir, directory)
         # if row['cloned'] == 0:
             if 'https://sourceforge.net/' in row['git']:
+                stats(row)
                 next(iter(row))
             elif 'https://selenic.com/' in row['git']:
+                stats(row)
                 next(iter(row))
             elif row['git'] == '':
+                stats(row)
                 next(iter(row))
             elif 'https://www.mercurial-scm.org/' in row['git']:
+                stats(row)
                 next(iter(row))
             elif 'https://github.com/' or 'https://git.savannah.gnu.org/' in row['git']:
                 os.mkdir(path)
@@ -88,6 +91,7 @@ def clone(repositories):
                 output = proc.stdout.read()
                 loc = json.loads(output)
                 row['lines_of_code'] = loc['SUM']['code']
+                stats(row)
             # writer.writerow({'name': row['name'], 'git': row['git'], 'cloned': row['cloned']})
             # shutil.move(tempfile.name, filename)
             # i += 1
@@ -103,6 +107,7 @@ def clone(repositories):
             output = proc.stdout.read()
             loc = json.loads(output)
             row['lines_of_code'] = loc['SUM']['code']
+            stats(row)
 
 
 def main():
@@ -115,7 +120,6 @@ def main():
     # repositories = load(inputcsv)
     # clone(repositories)
     # if is_github_repo(repositories):
-    stats(repositories)
     fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code']
     save(args.outfile, repositories, fieldnames)
     # save(outcsv, repositories, fieldnames)
