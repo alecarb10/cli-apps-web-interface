@@ -35,92 +35,87 @@ def save(out_file_name, repositories, fieldnames):
             writer.writerow(data)
 
 
-def stats(repositories):
-    for data in repositories[:10]:
-        if 'https://github.com/' in data['git']:
-            repo = data['git'].rsplit("/", 2)
-            user = repo[1]
-            project = repo[2]
-            proc = subprocess.Popen(["curl", f"https://api.github.com/repos/{user}/{project}"], stdout=subprocess.PIPE)
-            print(project)
-            output = proc.stdout.read()
-            stat = json.loads(output)
-            # input()
-            # print(project)
-            # print(stat['stargazers_count'])
-            data['stars'] = stat["stargazers_count"]
-            data['watch'] = stat["subscribers_count"]
-            data['fork'] = stat["forks_count"]
-        else:
-            data['stars'] = '/'
-            data['watch'] = '/'
-            data['fork'] = '/'
+def stats(row):
+    if 'https://github.com/' in row['git']:
+        repo = row['git'].rsplit("/", 2)
+        user = repo[1]
+        project = repo[2]
+        proc = subprocess.Popen(["curl", f"https://api.github.com/repos/{user}/{project}"], stdout=subprocess.PIPE)
+        print(project)
+        output = proc.stdout.read()
+        stat = json.loads(output)
+        # input()
+        # print(project)
+        # print(stat['stargazers_count'])
+        row['stars'] = stat["stargazers_count"]
+        row['watch'] = stat["subscribers_count"]
+        row['fork'] = stat["forks_count"]
+        print("Statistiche di " + row['git'] + " aggiornate")
+    else:
+        row['stars'] = '/'
+        row['watch'] = '/'
+        row['fork'] = '/'
+        print("Statistiche di " + row['git'] + " aggiornate")
 
 
-def ctrl(repositories, url):
+def clone(repositories, url):
     for row in repositories[:10]:
         if url == row['git']:
-            return True
-
-
-def clone(repositories):
-    for row in repositories[:10]:
-        if row['cloned'] == 0:
-            parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
-            directory = row['name']
-            path = os.path.join(parent_dir, directory)
+            if row['cloned'] == '0':
+                parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
+                directory = row['name']
+                path = os.path.join(parent_dir, directory)
         # if row['cloned'] == 0:
-            if 'https://sourceforge.net/' in row['git']:
-                next(iter(row))
-            elif 'https://selenic.com/' in row['git']:
-                next(iter(row))
-            elif row['git'] == '':
-                next(iter(row))
-            elif 'https://www.mercurial-scm.org/' in row['git']:
-                next(iter(row))
-            elif 'https://github.com/' or 'https://git.savannah.gnu.org/' in row['git']:
-                os.mkdir(path)
-                Repo.clone_from(row['git'], path)
-                row['cloned'] = 1
-                # print("-----", row['git'], "-----")
+                if 'https://sourceforge.net/' in row['git']:
+                    stats(row)
+                    next(iter(row))
+                elif 'https://selenic.com/' in row['git']:
+                    stats(row)
+                    next(iter(row))
+                elif row['git'] == '':
+                    stats(row)
+                    next(iter(row))
+                elif 'https://www.mercurial-scm.org/' in row['git']:
+                    stats(row)
+                    next(iter(row))
+                elif 'https://github.com/' or 'https://git.savannah.gnu.org/' in row['git']:
+                    Repo.clone_from(row['git'], path)
+                    row['cloned'] = 1
+                    # print("-----", row['git'], "-----")
+                    proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
+                    output = proc.stdout.read()
+                    loc = json.loads(output)
+                    row['lines_of_code'] = loc['SUM']['code']
+                    stats(row)
+            else:
+                parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
+                directory = row['name']
+                path = os.path.join(parent_dir, directory)
+                g = git.Repo(path)
+                g.remotes.origin.pull()
                 proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
                 output = proc.stdout.read()
                 loc = json.loads(output)
                 row['lines_of_code'] = loc['SUM']['code']
-            # writer.writerow({'name': row['name'], 'git': row['git'], 'cloned': row['cloned']})
-            # shutil.move(tempfile.name, filename)
-            # i += 1
-
+                stats(row)
         else:
-            parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
-            directory = row['name']
-            path = os.path.join(parent_dir, directory)
-            g = git.Repo(path)
-            g.remotes.origin.pull()
-            proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
-            output = proc.stdout.read()
-            loc = json.loads(output)
-            row['lines_of_code'] = loc['SUM']['code']
+            next(iter(row))
 
 
 def main():
-    # parser = init_argparser()
-    # args = parser.parse_args()
-    # inputcsv = '/home/ale/tesi/cli-apps/data/apps.csv'
-    # outcsv = '/home/ale/tesi/cli-apps-web-interface/stats-ridotto.csv'
-    filecsv = '/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv'
-    link = 'https://github.com/nadrad/h-m-m'
-    # repositories = load(args.outfile)
-    # url = args.urls
-    repositories = load(filecsv)
-    url = link
-    if ctrl(repositories, url) is True:
-        clone(repositories)
-        stats(repositories)
-        print("Statistiche di " + url + " aggiornate")
+    parser = init_argparser()
+    args = parser.parse_args()
+    # filecsv = '/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv'
+    # link = 'https://git.savannah.gnu.org/git/nano.git'
+    repositories = load(args.outfile)
+    url = args.urls
+    # repositories = load(filecsv)
+    # url = link
+    # if ctrl(repositories, url) is True:
+    clone(repositories, url)
     fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code']
-    # save(args.outfile, repositories, fieldnames)
-    save(filecsv, repositories, fieldnames)
+    save(args.outfile, repositories, fieldnames)
+    # save(filecsv, repositories, fieldnames)
 
 
 if __name__ == "__main__":
