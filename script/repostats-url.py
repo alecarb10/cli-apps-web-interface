@@ -22,8 +22,6 @@ def load(file_name):
         repositories = []
         for data in reader:
             repositories.append(data)
-            # repositories.append({'name': data['name'], 'git': data['git'], 'cloned': 0,
-            #                      'stars': 'N', 'watch': 'N', 'fork': 'N', 'lines_of_code': 0})
     return repositories
 
 
@@ -59,34 +57,30 @@ def stats(row):
 
 
 def clone(repositories, url):
+    whitelist = ['https://github.com/', 'https://git.savannah.gnu.org/', 'https://repo.or.cz/', 'https://ezix.org/',
+                 'https://git.skoll.ca/', 'https://gitlab.com/', 'https://git.finalrewind.org/',
+                 'https://gitlab.xiph.org/', 'git://git-annex.branchable.com', 'http://www.wagner.pp.ru/',
+                 'https://code.blicky.net/', 'https://git.deluge-torrent.org/', 'https://git.zx2c4.com/',
+                 'https://src.adamsgaard.dk/', 'https://www.kariliq.nl/', 'https://git.calcurse.org/',
+                 'https://dev.gnupg.org/', 'https://tildegit.org/', 'git://git.suckless.org/', 'https://git.sr.ht/',
+                 'https://git.frama-c.com/', 'git://git.z3bra.org/', 'https://git.meli.delivery/',
+                 'https://0xacab.org/', 'https://basedwa.re/', 'https://codeberg.org/']
     for row in repositories[:10]:
         if url == row['git']:
             if row['cloned'] == '0':
                 parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
                 directory = row['name']
                 path = os.path.join(parent_dir, directory)
-        # if row['cloned'] == 0:
-                if 'https://sourceforge.net/' in row['git']:
-                    stats(row)
-                    next(iter(row))
-                elif 'https://selenic.com/' in row['git']:
-                    stats(row)
-                    next(iter(row))
-                elif row['git'] == '':
-                    stats(row)
-                    next(iter(row))
-                elif 'https://www.mercurial-scm.org/' in row['git']:
-                    stats(row)
-                    next(iter(row))
-                elif 'https://github.com/' or 'https://git.savannah.gnu.org/' in row['git']:
-                    Repo.clone_from(row['git'], path)
-                    row['cloned'] = 1
-                    # print("-----", row['git'], "-----")
-                    proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
-                    output = proc.stdout.read()
-                    loc = json.loads(output)
-                    row['lines_of_code'] = loc['SUM']['code']
-                    stats(row)
+                for item in whitelist:
+                    if row['git'].startswith(item):
+                        os.mkdir(path)
+                        Repo.clone_from(row['git'], path)
+                        row['cloned'] = 1
+                        proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
+                        output = proc.stdout.read()
+                        loc = json.loads(output)
+                        row['lines_of_code'] = loc['SUM']['code']
+                stats(row)
             else:
                 parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
                 directory = row['name']
