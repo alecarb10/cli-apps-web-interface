@@ -6,15 +6,15 @@
 </head>
 
 <body>
-<h1>{{ title }}</h1>
+<h1>RepoStats</h1>
 <table border="1">
     <tr>
-        <th>{{ header[0] }}</th>
-        <th>{{ header[1] }}</th>
-        <th>{{ header[3] }}</th>
-        <th>{{ header[4] }}</th>
-        <th>{{ header[5] }}</th>
-        <th>{{ header[6] }}</th>
+        <th>{{ header[0]|upper }}</th>
+        <th>{{ header[1]|upper }}</th>
+        <th>{{ header[3]|upper }}</th>
+        <th>{{ header[4]|upper }}</th>
+        <th>{{ header[5]|upper }}</th>
+        <th>{{ header[6]|upper }}</th>
     </tr>
     {% for repos in repositories %}
     <tr align="center">

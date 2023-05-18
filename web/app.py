@@ -4,9 +4,10 @@ import csv
 app = Flask(__name__)
 
 
+title = "Cli Apps Web Interface"
 @app.route("/")
 def home():
-    return render_template("provaJinja.html", title="Prova")
+    return render_template("home.html", title=title)
 
 
 with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "r") as filecsv:
@@ -20,7 +21,7 @@ with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "r") 
 @app.route("/data")
 def results():
     context = {
-        "title": "RepoStats",
+        "title": title,
         "header": header,
         "repositories": repositories,
     }
