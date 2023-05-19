@@ -6,7 +6,8 @@
 </head>
 
 <body>
-<h1>RepoStats</h1>
+<a href="/">Home</a>
+<h1>RepoSTATS</h1>
 <table border="1">
     <tr>
         <th>{{ header[0]|upper }}</th>
@@ -15,17 +16,23 @@
         <th>{{ header[4]|upper }}</th>
         <th>{{ header[5]|upper }}</th>
         <th>{{ header[6]|upper }}</th>
+        <th>VOTE</th>
     </tr>
     {% for repos in repositories %}
     <tr align="center">
         <td>{{ repos.name }}</td>
-        <td>{{ repos.git }}</td>
+        <td><a href={{ repos.git }}>{{ repos.git }}</a></td>
         <td>{{ repos.stars }}</td>
         <td>{{ repos.watch }}</td>
         <td>{{ repos.fork }}</td>
         <td>{{ repos.lines_of_code }}</td>
+        <td>
+            <button type="button">LIKE</button>
+            <button type="button">DISLIKE</button>
+        </td>
     </tr>
     {% endfor %}
 </table>
 </body>
+
 </html>

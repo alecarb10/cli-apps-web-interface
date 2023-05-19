@@ -5,6 +5,8 @@ app = Flask(__name__)
 
 
 title = "Cli Apps Web Interface"
+
+
 @app.route("/")
 def home():
     return render_template("home.html", title=title)
