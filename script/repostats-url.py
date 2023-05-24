@@ -107,7 +107,7 @@ def main():
     # url = link
     # if ctrl(repositories, url) is True:
     clone(repositories, url)
-    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code']
+    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description']
     save(args.outfile, repositories, fieldnames)
     # save(filecsv, repositories, fieldnames)
 
