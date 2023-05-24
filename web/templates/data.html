@@ -6,12 +6,13 @@
 </head>
 
 <body>
-<a href="/">Home</a>
+<nav><a href="/">Home</a></nav>
 <h1>RepoSTATS</h1>
 <table border="1">
     <tr>
         <th>{{ header[0]|upper }}</th>
         <th>{{ header[1]|upper }}</th>
+        <th>{{ header[7]|upper }}</th>
         <th>{{ header[3]|upper }}</th>
         <th>{{ header[4]|upper }}</th>
         <th>{{ header[5]|upper }}</th>
@@ -22,13 +23,13 @@
     <tr align="center">
         <td>{{ repos.name }}</td>
         <td><a href={{ repos.git }}>{{ repos.git }}</a></td>
+        <td>{{ repos.description }}</td>
         <td>{{ repos.stars }}</td>
         <td>{{ repos.watch }}</td>
         <td>{{ repos.fork }}</td>
         <td>{{ repos.lines_of_code }}</td>
         <td>
-            <button type="button">LIKE</button>
-            <button type="button">DISLIKE</button>
+            <button type="button"><a href="vote" >VOTE HERE</a></button>
         </td>
     </tr>
     {% endfor %}
