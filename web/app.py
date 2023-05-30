@@ -21,16 +21,17 @@ with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "r") 
     for data in reader:
         repositories.append(data)
 
-def save(repositories):
+
+def save(like, dislike, fieldnames):
     with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "w") as outfilecsv:
-        writer = csv.DictWriter(outfilecsv, delimiter="\t")
+        writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
         for data in repositories[:5]:
+            data['like'] = like
+            data['dislike'] = dislike
             writer.writerow(data)
 
 
-like = 0
-dislike = 0
 @app.route("/data")
 def stats():
     context = {
@@ -45,26 +46,34 @@ def stats():
 def vote():
     has_voted = False
     vote_stamp = request.cookies.get('vote_stamp')
+    like = 0
+    dislike = 0
+    fieldnames = header
 
     if request.method == "POST":
-        has_voted = True
-        vote = request.form['vote']
-        if vote_stamp:
-            print(("You've already voted! The vote stamp is: " + vote_stamp))
-        else:
-            print("You can vote!")
-            vote_like = int(repositories['like'])
-            vote_dislike = int(repositories['dislike'])
-            vote_like += 1
-            vote_dislike += 1
-            save(repositories)
+        is_like = request.form.get('like')
+        is_dislike = request.form.get('dislike')
+        like += 1
+        dislike += 1
 
+    # if request.method == "POST":
+    #     has_voted = True
+    #     is_like = request.form.get('like')
+    #     is_dislike = request.form.get('dislike')
+    #     if vote_stamp:
+    #         print(("You've already voted! The vote stamp is: " + vote_stamp))
+    #     else:
+    #         print("You can vote!")
+    #         like += 1
+    #         dislike += 1
+
+    save(like, dislike, fieldnames)
     resp = make_response(render_template("vote.html"))
 
-    if has_voted:
-        vote_stamp = hex(random.getrandbits(64))[2:-1]
-        print("Set cookie for voted")
-        resp.set_cookie("vote_stamp", vote_stamp)
+    # if has_voted:
+    #     vote_stamp = hex(random.getrandbits(64))[2:-1]
+    #     print("Set cookie for voted")
+    #     resp.set_cookie("vote_stamp", vote_stamp)
 
     return resp
 
