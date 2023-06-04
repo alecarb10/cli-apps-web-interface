@@ -42,9 +42,6 @@ def stats(row):
         print(project)
         output = proc.stdout.read()
         stat = json.loads(output)
-        # input()
-        # print(project)
-        # print(stat['stargazers_count'])
         row['stars'] = stat["stargazers_count"]
         row['watch'] = stat["subscribers_count"]
         row['fork'] = stat["forks_count"]
@@ -105,7 +102,6 @@ def main():
     url = args.urls
     # repositories = load(filecsv)
     # url = link
-    # if ctrl(repositories, url) is True:
     clone(repositories, url)
     fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like', 'dislike']
     save(args.outfile, repositories, fieldnames)
