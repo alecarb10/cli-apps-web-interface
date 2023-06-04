@@ -77,19 +77,6 @@ def clone(repositories):
                     row['lines_of_code'] = loc['SUM']['code']
             stats(row)
 
-        else:
-            parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
-            directory = row['name']
-            path = os.path.join(parent_dir, directory)
-            g = git.Repo(path)
-            g.remotes.origin.pull()
-            print(row['name'] + ': pull eseguito')
-            proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
-            output = proc.stdout.read()
-            loc = json.loads(output)
-            row['lines_of_code'] = loc['SUM']['code']
-            stats(row)
-
 
 def main():
     parser = init_argparser()
@@ -107,11 +94,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# CONTEGGIO STAR
-# curl https://api.github.com/repos/toolleeo/cli-apps | grep 'stargazers_count'
-# CONTEGGIO FORKS
-# curl https://api.github.com/repos/curl/curl | grep 'forks_count'
-# CONTEGGIO WATCH
-# curl https://api.github.com/repos/curl/curl | grep 'subscribers_count'
