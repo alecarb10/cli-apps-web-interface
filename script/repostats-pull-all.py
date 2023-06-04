@@ -33,7 +33,7 @@ def save(out_file_name, repositories, fieldnames):
 
 
 def stats(row):
-    if 'https://github.com/' in row['git']:
+    if row['git'].startswith('https://github.com'):
         repo = row['git'].rsplit("/", 2)
         user = repo[1]
         project = repo[2]
