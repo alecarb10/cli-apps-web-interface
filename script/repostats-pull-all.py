@@ -12,7 +12,6 @@ def init_argparser():
     parser = argparse.ArgumentParser()
     # parser.add_argument('inputfile', action="store", type=str)
     parser.add_argument('-o', '--outfile', nargs='?', action="store", type=str)
-    parser.add_argument('-u', '--urls', nargs='?', type=str)
     return parser
 
 
@@ -29,7 +28,7 @@ def save(out_file_name, repositories, fieldnames):
     with open(out_file_name, "w") as outfilecsv:
         writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
-        for data in repositories[:10]:
+        for data in repositories:
             writer.writerow(data)
 
 
@@ -42,21 +41,16 @@ def stats(row):
         print(project)
         output = proc.stdout.read()
         stat = json.loads(output)
-        # input()
-        # print(project)
-        # print(stat['stargazers_count'])
         row['stars'] = stat["stargazers_count"]
         row['watch'] = stat["subscribers_count"]
         row['fork'] = stat["forks_count"]
-        print("Statistiche di " + row['git'] + " aggiornate")
     else:
         row['stars'] = '/'
         row['watch'] = '/'
         row['fork'] = '/'
-        print("Statistiche di " + row['git'] + " aggiornate")
 
 
-def clone(repositories, url):
+def update(repositories):
     whitelist = ['https://github.com/', 'https://git.savannah.gnu.org/', 'https://repo.or.cz/', 'https://ezix.org/',
                  'https://git.skoll.ca/', 'https://gitlab.com/', 'https://git.finalrewind.org/',
                  'https://gitlab.xiph.org/', 'git://git-annex.branchable.com', 'http://www.wagner.pp.ru/',
@@ -65,65 +59,35 @@ def clone(repositories, url):
                  'https://dev.gnupg.org/', 'https://tildegit.org/', 'git://git.suckless.org/', 'https://git.sr.ht/',
                  'https://git.frama-c.com/', 'git://git.z3bra.org/', 'https://git.meli.delivery/',
                  'https://0xacab.org/', 'https://basedwa.re/', 'https://codeberg.org/']
-    for row in repositories[:10]:
-        if url == row['git']:
-            if row['cloned'] == '0':
-                parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
-                directory = row['name']
-                path = os.path.join(parent_dir, directory)
-                for item in whitelist:
-                    if row['git'].startswith(item):
-                        os.mkdir(path)
-                        Repo.clone_from(row['git'], path)
-                        row['cloned'] = 1
-                        proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
-                        output = proc.stdout.read()
-                        loc = json.loads(output)
-                        row['lines_of_code'] = loc['SUM']['code']
-                stats(row)
-            else:
+    for row in repositories:
+        for item in whitelist:
+            if row['git'].startswith(item):
                 parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
                 directory = row['name']
                 path = os.path.join(parent_dir, directory)
                 g = git.Repo(path)
                 g.remotes.origin.pull()
+                print(row['name'] + ': pull eseguito')
                 proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
                 output = proc.stdout.read()
                 loc = json.loads(output)
                 row['lines_of_code'] = loc['SUM']['code']
-                stats(row)
-        else:
-            next(iter(row))
+        stats(row)
 
 
 def main():
     parser = init_argparser()
     args = parser.parse_args()
-    # filecsv = '/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv'
-    # link = 'https://git.savannah.gnu.org/git/nano.git'
+    # inputcsv = '/home/ale/tesi/cli-apps/data/apps.csv'
+    # outcsv = '/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv'
     repositories = load(args.outfile)
-    url = args.urls
-    # repositories = load(filecsv)
-    # url = link
-    # if ctrl(repositories, url) is True:
-    clone(repositories, url)
+    update(repositories)
+    # repositories = load(inputcsv)
+    # clone(repositories)
     fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like', 'dislike']
     save(args.outfile, repositories, fieldnames)
-    # save(filecsv, repositories, fieldnames)
+    # save(outcsv, repositories, fieldnames)
 
 
 if __name__ == "__main__":
     main()
-
-
-# CONTEGGIO STAR
-# curl https://api.github.com/repos/toolleeo/cli-apps | grep 'stargazers_count'
-# CONTEGGIO FORKS
-# curl https://api.github.com/repos/curl/curl | grep 'forks_count'
-# CONTEGGIO WATCH
-# curl https://api.github.com/repos/curl/curl | grep 'subscribers_count'
-
-# https://github.com/nadrad/h-m-m https://github.com/haileys/quickserve
-
-#     for links in repositories:
-#         links['git'] = links.update("https://github.com/", "")
