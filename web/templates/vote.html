@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ title }}</title>
+    <title>{{ title }} - Vote</title>
 </head>
 
 <body>
@@ -12,13 +12,13 @@
 </nav>
 <h1 align="center">VOTE HERE</h1>
 <h2 align="center">for</h2>
-<h2 align="center">*name of repo*</h2>
+<h2 align="center">{{ name }}</h2>
 <div class="container" align="center">
-	<form method="post">
-		<button type="submit" value="like" id="like">LIKE</button>
-		<p>*number of like*</p>
-		<button type="submit" value="dislike" id="dislike">DISLIKE</button>
-		<p>*number of dislike*</p>
+	<form method="post" action="/vote">
+		<input type="submit" value="LIKE" name="like">
+		<p>{{ like }}</p>
+		<input type="submit" value="DISLIKE" name="dislike">
+		<p>{{ dislike }}</p>
 	</form>
 </div>
 </body>

@@ -1,5 +1,3 @@
-import random
-
 from flask import Flask, render_template, request, make_response
 import csv
 
@@ -19,6 +17,9 @@ with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "r") 
     header = reader.fieldnames
     repositories = []
     for data in reader:
+        data['name']
+        data['like']
+        data['dislike']
         repositories.append(data)
 
 
@@ -42,20 +43,27 @@ def stats():
     return render_template("data.html", **context)
 
 
+
 @app.route("/vote", methods=["GET", "POST"])
 def vote():
-    has_voted = False
-    vote_stamp = request.cookies.get('vote_stamp')
-    like = 0
-    dislike = 0
+    like = int(data['like'])
+    dislike = int(data['dislike'])
     fieldnames = header
 
     if request.method == "POST":
-        is_like = request.form.get('like')
-        is_dislike = request.form.get('dislike')
-        like += 1
-        dislike += 1
+        if request.form.get('like') == 'LIKE':
+            like += 1
+        elif request.form.get('dislike') == 'DISLIKE':
+            dislike += 1
+        else:
+            pass
 
+    context = {
+        "title": title,
+        "name": data['name'],
+        "like": like,
+        "dislike": dislike,
+    }
     # if request.method == "POST":
     #     has_voted = True
     #     is_like = request.form.get('like')
@@ -68,7 +76,7 @@ def vote():
     #         dislike += 1
 
     save(like, dislike, fieldnames)
-    resp = make_response(render_template("vote.html"))
+    resp = make_response(render_template("vote.html", **context))
 
     # if has_voted:
     #     vote_stamp = hex(random.getrandbits(64))[2:-1]
