@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }} - Vote</title>
-</head>
+{% extends 'base.html' %}
 
-<body>
-<nav>
-<a href="/">Home</a>
-<a href="data">RepoSTATS</a>
-</nav>
+{% block content %}
 <h1 align="center">VOTE HERE</h1>
 <h2 align="center">for</h2>
 <h2 align="center">{{ name|upper }}</h2>
@@ -21,5 +12,4 @@
 		<p>{{ dislike }}</p>
 	</form>
 </div>
-</body>
-</html>
+{% endblock %}

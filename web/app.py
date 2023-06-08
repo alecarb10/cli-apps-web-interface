@@ -4,14 +4,6 @@ import csv
 app = Flask(__name__)
 
 
-title = "Cli Apps Web Interface"
-
-
-@app.route("/")
-def home():
-    return render_template("home.html", title=title)
-
-
 with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "r") as filecsv:
     reader = csv.DictReader(filecsv, delimiter="\t")
     header = reader.fieldnames
@@ -27,10 +19,23 @@ def save(like, dislike, fieldnames):
     with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "w") as outfilecsv:
         writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
-        for data in repositories[:5]:
+        for data in repositories:
             data['like'] = like
             data['dislike'] = dislike
             writer.writerow(data)
+
+
+title = "Cli Apps Web Interface"
+
+
+@app.route("/")
+def base():
+    return render_template("base.html", title=title)
+
+
+@app.route("/home")
+def home():
+    return render_template("home.html", title=title)
 
 
 @app.route("/data")
@@ -40,8 +45,7 @@ def stats():
         "header": header,
         "repositories": repositories,
     }
-    return render_template("data.html", **context)
-
+    return render_template("data1.html", **context)
 
 
 @app.route("/vote", methods=["GET", "POST"])
@@ -64,19 +68,9 @@ def vote():
         "like": like,
         "dislike": dislike,
     }
-    # if request.method == "POST":
-    #     has_voted = True
-    #     is_like = request.form.get('like')
-    #     is_dislike = request.form.get('dislike')
-    #     if vote_stamp:
-    #         print(("You've already voted! The vote stamp is: " + vote_stamp))
-    #     else:
-    #         print("You can vote!")
-    #         like += 1
-    #         dislike += 1
 
     save(like, dislike, fieldnames)
-    resp = make_response(render_template("vote.html", **context))
+    resp = make_response(render_template("vote1.html", **context))
 
     # if has_voted:
     #     vote_stamp = hex(random.getrandbits(64))[2:-1]

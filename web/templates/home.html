@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
+{% extends 'base.html' %}
 
-<body>
+{% block content %}
 <h1>CLI APPS WEB INTERFACE</h1>
-<p>Clicking on <a href="data">RepoSTATS</a> you can found
+<p>Clicking on <a href="{{ url_for('stats') }}">RepoSTATS</a> you can found
 a list of CLI/TUI apps with links, a short description and some statistics.
 You can also rate them.</p>
-</body>
-
-</html>
+{% endblock %}

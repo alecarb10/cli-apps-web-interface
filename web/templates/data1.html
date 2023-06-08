@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>RepoSTATS</h1>
+<table border="1">
+    <tr>
+        <th>{{ header[0]|upper }}</th>
+        <th>{{ header[1]|upper }}</th>
+        <th>{{ header[7]|upper }}</th>
+        <th>{{ header[3]|upper }}</th>
+        <th>{{ header[4]|upper }}</th>
+        <th>{{ header[5]|upper }}</th>
+        <th>{{ header[6]|upper }}</th>
+        <th>VOTE</th>
+    </tr>
+    {% for repos in repositories %}
+    <tr align="center">
+        <td>{{ repos.name }}</td>
+        <td><a href={{ repos.git }}>{{ repos.git }}</a></td>
+        <td>{{ repos.description }}</td>
+        <td>{{ repos.stars }}</td>
+        <td>{{ repos.watch }}</td>
+        <td>{{ repos.fork }}</td>
+        <td>{{ repos.lines_of_code }}</td>
+        <td>
+            <a href="vote">VOTE HERE</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
