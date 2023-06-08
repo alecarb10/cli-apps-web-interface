@@ -30,7 +30,7 @@ def save(out_file_name, repositories, fieldnames):
     with open(out_file_name, "w") as outfilecsv:
         writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
-        for data in repositories[:5]:
+        for data in repositories[:12]:
             writer.writerow(data)
 
 
@@ -61,7 +61,7 @@ def clone(repositories):
                  'https://dev.gnupg.org/', 'https://tildegit.org/', 'git://git.suckless.org/', 'https://git.sr.ht/',
                  'https://git.frama-c.com/', 'git://git.z3bra.org/', 'https://git.meli.delivery/',
                  'https://0xacab.org/', 'https://basedwa.re/', 'https://codeberg.org/']
-    for row in repositories[:5]:
+    for row in repositories[:12]:
         if row['cloned'] == 0:
             parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
             directory = row['name']
