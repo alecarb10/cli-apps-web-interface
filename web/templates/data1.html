@@ -23,7 +23,14 @@
         <td>{{ repos.fork }}</td>
         <td>{{ repos.lines_of_code }}</td>
         <td>
-            <a href="vote">VOTE HERE</a>
+            <div class="container" align="center">
+	            <form method="post" action="/data" id="{{ name }}">
+		        <input type="submit" value="LIKE" name="like">
+		        <p>{{ like }}</p>
+		        <input type="submit" value="DISLIKE" name="dislike">
+		        <p>{{ dislike }}</p>
+	            </form>
+            </div>
         </td>
     </tr>
     {% endfor %}

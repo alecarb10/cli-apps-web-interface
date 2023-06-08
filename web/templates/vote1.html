@@ -3,13 +3,15 @@
 {% block content %}
 <h1 align="center">VOTE HERE</h1>
 <h2 align="center">for</h2>
+{% for name in names %}
 <h2 align="center">{{ name|upper }}</h2>
 <div class="container" align="center">
-	<form method="post" action="/vote">
+	<form method="post" action="/vote" id="{{ name }}">
 		<input type="submit" value="LIKE" name="like">
 		<p>{{ like }}</p>
 		<input type="submit" value="DISLIKE" name="dislike">
 		<p>{{ dislike }}</p>
 	</form>
 </div>
+{% endfor %}
 {% endblock %}
