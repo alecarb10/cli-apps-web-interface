@@ -84,7 +84,7 @@ def main():
     update(repositories)
     # repositories = load(inputcsv)
     # clone(repositories)
-    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like', 'dislike']
+    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like']
     save(args.outfile, repositories, fieldnames)
     # save(outcsv, repositories, fieldnames)
 

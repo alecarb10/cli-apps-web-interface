@@ -103,7 +103,7 @@ def main():
     # repositories = load(filecsv)
     # url = link
     clone(repositories, url)
-    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like', 'dislike']
+    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like']
     save(args.outfile, repositories, fieldnames)
     # save(filecsv, repositories, fieldnames)
 

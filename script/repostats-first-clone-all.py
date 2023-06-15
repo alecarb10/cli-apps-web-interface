@@ -22,7 +22,7 @@ def load(file_name):
         for data in reader:
             repositories.append({'name': data['name'], 'git': data['git'], 'cloned': 0,
                                  'stars': 'N', 'watch': 'N', 'fork': 'N', 'lines_of_code': 0, 'description': data['description'],
-                                 'like': 0, 'dislike': 0})
+                                 'like': 0})
     return repositories
 
 
@@ -87,7 +87,7 @@ def main():
     clone(repositories)
     # repositories = load(inputcsv)
     # clone(repositories)
-    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like', 'dislike']
+    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like']
     save(args.outfile, repositories, fieldnames)
     # save(outcsv, repositories, fieldnames)
 
