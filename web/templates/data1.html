@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>RepoSTATS</h1>
-<table border="1">
+<table>
     <tr>
         <th>{{ header[0]|upper }}</th>
         <th>{{ header[1]|upper }}</th>
@@ -24,11 +24,9 @@
         <td>{{ repos.lines_of_code }}</td>
         <td>
             <div class="container" align="center">
-	            <form method="post" action="/data" id="{{ name }}">
-		        <input type="submit" value="LIKE" name="like">
-		        <p>{{ like }}</p>
-		        <input type="submit" value="DISLIKE" name="dislike">
-		        <p>{{ dislike }}</p>
+	            <form method="post" action="/data">
+		        <input type="submit" value="LIKE" name={{ repos.git }}>
+		        <p>{{ repos.like }}</p>
 	            </form>
             </div>
         </td>
