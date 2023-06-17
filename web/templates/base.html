@@ -41,6 +41,18 @@
             border-bottom: 1px solid #ccc;
             font-weight: bold;
         }
+        h1, p {
+            background-color: #fff;
+            padding: 10px;
+            border-bottom: #ccc;
+        }
+        #login {
+            color: #d64161;
+            font-size: 1.5em;
+            text-align: right;
+            margin-right: 50px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -49,6 +61,7 @@
     <a href="{{ url_for('stats') }}">RepoSTATS</a>
 </nav>
 <hr>
+<li id="login"><a href="{{ url_for('login') }}">Login</a></li>
 <div class="content">
     {% block content %} {% endblock %}
 </div>
