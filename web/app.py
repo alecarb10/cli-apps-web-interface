@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, redirect, url_for
 import csv
+import requests
+import json
 
 app = Flask(__name__)
 
@@ -9,20 +11,20 @@ with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "r") 
     header = reader.fieldnames
     repositories = []
     names = []
+    gits = []
     for data in reader:
         data['like']
-        data['dislike']
+        gits.append(data['git'])
         names.append(data['name'])
         repositories.append(data)
 
 
-def save(like, dislike, fieldnames):
+def save(like, fieldnames):
     with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "w") as outfilecsv:
         writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
         for data in repositories:
             data['like'] = like
-            data['dislike'] = dislike
             writer.writerow(data)
 
 
@@ -41,61 +43,59 @@ def home():
 
 @app.route("/data", methods=["GET", "POST"])
 def stats():
-    like = int(data['like'])
-    dislike = int(data['dislike'])
+    message = ""
 
     if request.method == "POST":
-        if request.form.get('like') == 'LIKE':
-            like += 1
-        elif request.form.get('dislike') == 'DISLIKE':
-            dislike += 1
+        secretKey = "6LdRlq4mAAAAAFNZh-ULl2z7REhQHcH1Ug9FPAxF"
+        captchaResponse = request.form.get("g-recaptcha-response")
+        userIP = request.remote_addr
+
+        captchaURL = f'''https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={captchaResponse}&remoteip={userIP}'''
+
+        responseData = requests.get(captchaURL).text
+        parsedData = json.loads(responseData)
+
+        if parsedData['success'] == True:
+            message = "<p style='color: green;'>Your form has been submitted successfully!</p>" # Show the user if reCAPTCHA is valid
         else:
-            pass
+            message = "<p style='color: red;'>Invalid reCAPTCHA</p>" # Show error if the reCAPTCHA is invalid
+
+        i = 0
+        for repo in repositories:
+            if request.form.get(repo['git']) == 'LIKE':
+                repositories[i]['like'] = int(repositories[i]['like']) + 1
+                i += 1
+            else:
+                i += 1
+                pass
 
     context = {
         "title": title,
         "header": header,
         "repositories": repositories,
-        "like": like,
-        "dislike": dislike
+        "message": message
     }
 
-    save(like, dislike, header)
+    # print(context['repositories'])
+    # save(repositories[i]['like'], header)
     resp = make_response(render_template("data1.html", **context))
 
     return resp
 
 
-# @app.route("/vote", methods=["GET", "POST"])
-# def vote():
-#     like = int(data['like'])
-#     dislike = int(data['dislike'])
-#     fieldnames = header
-#
-#     if request.method == "POST":
-#         if request.form.get('like') == 'LIKE':
-#             like += 1
-#         elif request.form.get('dislike') == 'DISLIKE':
-#             dislike += 1
-#         else:
-#             pass
-#
-#     context = {
-#         "title": title,
-#         "names": names,
-#         "like": like,
-#         "dislike": dislike,
-#     }
-#
-#     save(like, dislike, fieldnames)
-#     resp = make_response(render_template("vote1.html", **context))
-#
-#     # if has_voted:
-#     #     vote_stamp = hex(random.getrandbits(64))[2:-1]
-#     #     print("Set cookie for voted")
-#     #     resp.set_cookie("vote_stamp", vote_stamp)
-#
-#     return resp
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+
+    if request.method == "POST":
+        if request.form['username'] != 'admin@admin.it' or request.form['password'] != 'admin':
+            error = "Invalid Credentials. Please try again."
+        else:
+            return redirect(url_for('home'))
+
+    resp = make_response(render_template("login.html", error=error))
+
+    return resp
 
 
 if __name__ == "__main__":

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table>
+    <tr>
+        <th> </th>
+        <th>Login</th>
+    </tr>
+    <tr>
+        <td>
+            <form method="post">
+            <div class="g-recaptcha mt-3" align="center" data-sitekey="6LdRlq4mAAAAAMjuWEIPB-m8LWruNlHb3G8sz9Pe"></div>
+            {{ message | safe }}
+            <button type="submit">Submit</button>
+            </form>
+        </td>
+        <td>
+            <form action="" method="post">
+                <input type="email" placeholder="Email" name="username" value="{{ request.form.username }}">
+                <input type="password" placeholder="Password" name="password" value="{{ request.form.password }}">
+                <input class="btn btn-default" type="submit" value="Login">
+            </form>
+            {% if error %}
+            <p class="error"><strong>Error:</strong>{{ error }}</p>
+            {% endif %}
+        </td>
+    </tr>
+
+</table>
+
+{% endblock %}
