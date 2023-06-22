@@ -1,17 +1,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>PLEASE LOGIN</h1>
+<h1 align="center">PLEASE LOGIN</h1>
 <br>
 <form action="" method="post">
-    <input type="email" placeholder="Email" name="username" value="{{
-    request.form.username }}">
-    <input type="password" placeholder="Password" name="password" value="{{
-    request.form.password }}">
-    <input class="btn btn-default" type="submit" value="Login">
+    <table>
+        <tr>
+            <div class="container" align="center">
+                <input type="email" placeholder="Email" name="username" value="{{
+                request.form.username }}">
+                <input type="password" placeholder="Password" name="password" value="{{
+                request.form.password }}">
+                <input class="btn btn-default" type="submit" value="Login">
+                {% if error %}
+                <p class="error"><strong>Error:</strong> {{ error }}
+                {% endif %}
+            </div>
+        </tr>
+    </table>
+<h1 align="center">OR</h1>
+    <table>
+        <tr>
+            <div class="container" align="center">
+                <div class="g-recaptcha mt-3" align="center" data-sitekey="6Lc05LwmAAAAALx3gbBScQ4amWBlcmE1lYgEFcXl"></div>
+                {{ message | safe }}
+                <button type="submit">Submit</button>
+            </div>
+        </tr>
+    </table>
 </form>
-{% if error %}
-    <p class="error"><strong>Error:</strong> {{ error }}
-{% endif %}
 
 {% endblock %}

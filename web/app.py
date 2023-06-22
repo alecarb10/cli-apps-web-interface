@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, make_response, redirect, url_
 import csv
 import requests
 import json
+import time
 
 app = Flask(__name__)
 
@@ -43,6 +44,30 @@ def home():
 
 @app.route("/data", methods=["GET", "POST"])
 def stats():
+    i = 0
+    for repo in repositories:
+        if request.form.get(repo['git']) == 'LIKE':
+            repositories[i]['like'] = int(repositories[i]['like']) + 1
+            i += 1
+        else:
+            i += 1
+            pass
+
+    context = {
+        "title": title,
+        "header": header,
+        "repositories": repositories,
+    }
+
+    # print(context['repositories'])
+    # save(repositories[i]['like'], header)
+    resp = make_response(render_template("data1.html", **context))
+
+    return resp
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
     message = ""
 
     if request.method == "POST":
@@ -56,47 +81,33 @@ def stats():
         parsedData = json.loads(responseData)
 
         if parsedData['success'] == True:
-            message = "<p style='color: green;'>Your form has been submitted successfully!</p>" # Show the user if reCAPTCHA is valid
+            message = "<p style='color: green;'>Your form has been submitted successfully!</p>"  # Show the user if reCAPTCHA is valid
+            return redirect(url_for('stats'))
         else:
-            message = "<p style='color: red;'>Invalid reCAPTCHA</p>" # Show error if the reCAPTCHA is invalid
-
-        i = 0
-        for repo in repositories:
-            if request.form.get(repo['git']) == 'LIKE':
-                repositories[i]['like'] = int(repositories[i]['like']) + 1
-                i += 1
-            else:
-                i += 1
-                pass
-
-    context = {
-        "title": title,
-        "header": header,
-        "repositories": repositories,
-        "message": message
-    }
-
-    # print(context['repositories'])
-    # save(repositories[i]['like'], header)
-    resp = make_response(render_template("data1.html", **context))
-
-    return resp
+            message = "<p style='color: red;'>Invalid reCAPTCHA</p>"  # Show error if the reCAPTCHA is invalid
 
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
     error = None
 
     if request.method == "POST":
         if request.form['username'] != 'admin@admin.it' or request.form['password'] != 'admin':
             error = "Invalid Credentials. Please try again."
         else:
-            return redirect(url_for('home'))
+            return redirect(url_for('stats'))
 
-    resp = make_response(render_template("login.html", error=error))
+    context = {
+        "message": message,
+        "error": error,
+    }
+
+    resp = make_response(render_template("login.html", **context))
 
     return resp
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+# sign up -> prima iscrizione
+# sign in -> successivi login
