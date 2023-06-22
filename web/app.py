@@ -46,7 +46,7 @@ def stats():
     message = ""
 
     if request.method == "POST":
-        secretKey = "6LdRlq4mAAAAAFNZh-ULl2z7REhQHcH1Ug9FPAxF"
+        secretKey = open("../../recaptcha_private_key", "r").read()
         captchaResponse = request.form.get("g-recaptcha-response")
         userIP = request.remote_addr
 
