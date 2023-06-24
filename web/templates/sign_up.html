@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 align="center">PLEASE SIGN UP</h1>
+<br>
+<form action="" method="post">
+    <table>
+        <tr>
+            <div class="container" align="center">
+                <input type="email" placeholder="Email" name="username" value="{{
+                request.form.username }}">
+                <input type="password" placeholder="Password" name="password" value="{{
+                request.form.password }}">
+                <p><div class="g-recaptcha mt-3" align="center" data-sitekey="6Lc05LwmAAAAALx3gbBScQ4amWBlcmE1lYgEFcXl"></div></p>
+                {{ message | safe }}
+                <p><button type="submit">Submit</button></p>
+            </div>
+        </tr>
+    </table>
+</form>
+
+{% endblock %}
