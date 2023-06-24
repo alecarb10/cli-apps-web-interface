@@ -78,15 +78,10 @@ def update(repositories):
 def main():
     parser = init_argparser()
     args = parser.parse_args()
-    # inputcsv = '/home/ale/tesi/cli-apps/data/apps.csv'
-    # outcsv = '/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv'
     repositories = load(args.outfile)
     update(repositories)
-    # repositories = load(inputcsv)
-    # clone(repositories)
     fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like']
     save(args.outfile, repositories, fieldnames)
-    # save(outcsv, repositories, fieldnames)
 
 
 if __name__ == "__main__":
