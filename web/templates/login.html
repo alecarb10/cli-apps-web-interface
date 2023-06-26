@@ -11,20 +11,10 @@
                 request.form.username }}">
                 <input type="password" placeholder="Password" name="password" value="{{
                 request.form.password }}">
-                <input class="btn btn-default" type="submit" value="Login">
+                <p><input class="btn btn-default" type="submit" value="Login"></p>
                 {% if error %}
                 <p class="error"><strong>Error:</strong> {{ error }}
                 {% endif %}
-            </div>
-        </tr>
-    </table>
-<h1 align="center">OR</h1>
-    <table>
-        <tr>
-            <div class="container" align="center">
-                <div class="g-recaptcha mt-3" align="center" data-sitekey="6Lc05LwmAAAAALx3gbBScQ4amWBlcmE1lYgEFcXl"></div>
-                {{ message | safe }}
-                <p><button type="submit">Submit</button></p>
             </div>
         </tr>
     </table>
