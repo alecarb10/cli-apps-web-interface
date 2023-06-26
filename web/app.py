@@ -35,6 +35,11 @@ def save_users(users):
         writer = csv.DictWriter(userscsv, delimiter="\t", fieldnames=fieldnames)
         writer.writerow(users)
 
+with open("../files/users.csv", "r", encoding="utf-8") as readusers:
+    reader = csv.DictReader(readusers, delimiter="\t")
+    accounts = []
+    for row in reader:
+        accounts.append(row)
 
 title = "Cli Apps Web Interface"
 
@@ -66,7 +71,6 @@ def stats():
         "repositories": repositories,
     }
 
-    # print(context['repositories'])
     # save(repositories[i]['like'], header)
     resp = make_response(render_template("data1.html", **context))
 
@@ -80,24 +84,23 @@ def sign_up():
     if request.method == "POST":
         encoded_psw = base64.b64encode(request.form['password'].encode("utf-8"))
 
-        secretKey = open("../../recaptcha_private_key", "r").read()
-        captchaResponse = request.form.get("g-recaptcha-response")
-        userIP = request.remote_addr
+        secret_key = open("../../recaptcha_private_key", "r").read()
+        captcha_response = request.form.get("g-recaptcha-response")
+        user_ip = request.remote_addr
 
-        captchaURL = f'''https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={captchaResponse}&remoteip={userIP}'''
+        captcha_url = f'''https://www.google.com/recaptcha/api/siteverify?secret={secret_key}&response={captcha_response}&remoteip={user_ip}'''
 
-        responseData = requests.get(captchaURL).text
-        parsedData = json.loads(responseData)
+        response_data = requests.get(captcha_url).text
+        parsed_data = json.loads(response_data)
 
-        if parsedData['success'] == True:
+        if parsed_data['success']:
             message = "<p style='color: green;'>Your account has been submitted successfully!</p>"  # Show the user if reCAPTCHA is valid
+            save_users({"username": request.form['username'],
+                        "password": encoded_psw,
+                        "timestamp": parsed_data['challenge_ts']})
             return redirect(url_for('stats'))
         else:
             message = "<p style='color: red;'>Invalid reCAPTCHA</p>"  # Show error if the reCAPTCHA is invalid
-
-        save_users({"username": request.form['username'],
-                    "password": encoded_psw,
-                    "timestamp": parsedData['challenge_ts']})
 
     context = {
         "message": message,
@@ -110,38 +113,37 @@ def sign_up():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    message = ""
+    # message = ""
 
-    if request.method == "POST":
-        secretKey = open("../../recaptcha_private_key", "r").read()
-        captchaResponse = request.form.get("g-recaptcha-response")
-        userIP = request.remote_addr
-
-        captchaURL = f'''https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={captchaResponse}&remoteip={userIP}'''
-
-        responseData = requests.get(captchaURL).text
-        parsedData = json.loads(responseData)
-
-        if parsedData['success'] == True:
-            message = "<p style='color: green;'>Your form has been submitted successfully!</p>"  # Show the user if reCAPTCHA is valid
-            return redirect(url_for('stats'))
-        else:
-            message = "<p style='color: red;'>Invalid reCAPTCHA</p>"  # Show error if the reCAPTCHA is invalid
+    # if request.method == "POST":
+    #     secret_key = open("../../recaptcha_private_key", "r").read()
+    #     captcha_response = request.form.get("g-recaptcha-response")
+    #     user_ip = request.remote_addr
+    #
+    #     captcha_url = f'''https://www.google.com/recaptcha/api/siteverify?secret={secret_key}&response={captcha_response}&remoteip={user_ip}'''
+    #
+    #     response_data = requests.get(captcha_url).text
+    #     parsed_data = json.loads(response_data)
+    #
+    #     if parsed_data['success']:
+    #         message = "<p style='color: green;'>Your form has been submitted successfully!</p>"  # Show the user if reCAPTCHA is valid
+    #         return redirect(url_for('stats'))
+    #     else:
+    #         message = "<p style='color: red;'>Invalid reCAPTCHA</p>"  # Show error if the reCAPTCHA is invalid
 
     error = None
 
-    if request.method == "POST":
-        if request.form['username'] != 'admin@admin.it' or request.form['password'] != 'admin':
-            error = "Invalid Credentials. Please try again."
-        else:
-            encoded_psw = base64.b64encode(request.form['password'].encode("utf-8"))
-            print(encoded_psw)
-            users = [request.form['username'], encoded_psw, 0]
-            save_users(users)
-            return redirect(url_for('stats'))
+    for account in accounts:
+        if request.method == "POST":
+            input_password = str(base64.b64encode(request.form['password'].encode("utf-8")))
+            if request.form['username'] != account['username'] \
+                    or input_password != account['password']:
+                error = "Invalid Credentials. Please try again."
+            else:
+                return redirect(url_for('stats'))
 
     context = {
-        "message": message,
+        # "message": message,
         "error": error,
     }
 
