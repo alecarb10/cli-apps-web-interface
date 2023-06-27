@@ -47,9 +47,9 @@ def stats(row):
         row['fork'] = stat["forks_count"]
         print("Statistiche di " + row['git'] + " aggiornate")
     else:
-        row['stars'] = '/'
-        row['watch'] = '/'
-        row['fork'] = '/'
+        row['stars'] = 'N/A'
+        row['watch'] = 'N/A'
+        row['fork'] = 'N/A'
         print("Statistiche di " + row['git'] + " aggiornate")
 
 
