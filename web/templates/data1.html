@@ -16,24 +16,30 @@
         <td align="center">
             {{ repos.name }}
             {% if repos.git.startswith('https://github.com/') %}
-                <p><img src="{{url_for('static', filename='github-mark.png')}}"
-                width="50" height="50"/></p>
+                <p><a href="{{ repos.git }}"><img src="{{url_for('static', filename='github-mark.png')}}"
+                width="50" height="50"/></a></p>
             {% elif repos.git.startswith('https://git.savannah.gnu.org/') %}
-                <p><img src="{{url_for('static', filename='gnu-logo.png')}}"
-                width="50" height="50"/></p>
+                <p><a href="{{ repos.git }}"><img src="{{url_for('static', filename='gnu-logo.png')}}"
+                width="50" height="50"/></a></p>
             {% elif repos.git.startswith('https://gitlab.com/') %}
-                <p><img src="{{url_for('static', filename='gitlab-logo-500.png')}}"
-                width="50" height="50"/></p>
+                <p><a href="{{ repos.git }}"><img src="{{url_for('static', filename='gitlab-logo-500.png')}}"
+                width="50" height="50"/></a></p>
             {% else %}
-                <p><img src="{{url_for('static', filename='git-logo.png')}}"
-                width="50" height="50"/></p>
+                <p><a href="{{ repos.git }}"><img src="{{url_for('static', filename='git-logo.png')}}"
+                width="50" height="50"/></a></p>
             {% endif %}
         </td>
         <td align="left">{{ repos.description }}</td>
         <td align="center">{{ repos.stars }}</td>
         <td align="center">{{ repos.watch }}</td>
         <td align="center">{{ repos.fork }}</td>
-        <td align="center">{{ repos.lines_of_code }}</td>
+        <td align="center">
+            {% if repos.lines_of_code == '0' %}
+            N/A
+            {% else %}
+            {{ repos.lines_of_code }}
+            {% endif %}
+        </td>
         <td>
             <div class="container" align="center">
 	            <form method="post" action="/data">
