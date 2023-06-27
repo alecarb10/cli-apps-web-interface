@@ -35,11 +35,13 @@ def save_users(users):
         writer = csv.DictWriter(userscsv, delimiter="\t", fieldnames=fieldnames)
         writer.writerow(users)
 
+
 with open("../files/users.csv", "r", encoding="utf-8") as readusers:
     reader = csv.DictReader(readusers, delimiter="\t")
     accounts = []
     for row in reader:
         accounts.append(row)
+
 
 title = "Cli Apps Web Interface"
 
@@ -94,7 +96,7 @@ def sign_up():
         parsed_data = json.loads(response_data)
 
         if parsed_data['success']:
-            message = "<p style='color: green;'>Your account has been submitted successfully!</p>"  # Show the user if reCAPTCHA is valid
+            message = "<p style='color: green;'>Your account has been submitted successfully!</p>" # Show the user if reCAPTCHA is valid
             save_users({"username": request.form['username'],
                         "password": encoded_psw,
                         "timestamp": parsed_data['challenge_ts']})
@@ -154,7 +156,3 @@ def login():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-# sign up -> prima iscrizione
-# sign in -> successivi login
