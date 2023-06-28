@@ -1,10 +1,13 @@
-from flask import Flask, render_template, request, make_response, redirect, url_for
+from flask import Flask, render_template, request, \
+    make_response, redirect, url_for, flash
 import csv
 import requests
 import json
 import base64
 
+
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
 with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "r") as filecsv:
@@ -73,7 +76,7 @@ def stats():
         "repositories": repositories,
     }
 
-    # save(repositories[i]['like'], header)
+    # save_like(repositories[i]['like'], header)
     resp = make_response(render_template("data1.html", **context))
 
     return resp
@@ -96,11 +99,16 @@ def sign_up():
         parsed_data = json.loads(response_data)
 
         if parsed_data['success']:
-            message = "<p style='color: green;'>Your account has been submitted successfully!</p>" # Show the user if reCAPTCHA is valid
-            save_users({"username": request.form['username'],
-                        "password": encoded_psw,
-                        "timestamp": parsed_data['challenge_ts']})
-            return redirect(url_for('stats'))
+            for account in accounts:
+                if request.form['username'] == account['username']:
+                    # flash('Account already created')
+                    return redirect(url_for('login'))
+                else:
+                    message = "<p style='color: green;'>Your account has been submitted successfully!</p>"  # Show the user if reCAPTCHA is valid
+                    save_users({"username": request.form['username'],
+                                "password": encoded_psw,
+                                "timestamp": parsed_data['challenge_ts']})
+                    return redirect(url_for('stats'))
         else:
             message = "<p style='color: red;'>Invalid reCAPTCHA</p>"  # Show error if the reCAPTCHA is invalid
 
@@ -115,24 +123,6 @@ def sign_up():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # message = ""
-
-    # if request.method == "POST":
-    #     secret_key = open("../../recaptcha_private_key", "r").read()
-    #     captcha_response = request.form.get("g-recaptcha-response")
-    #     user_ip = request.remote_addr
-    #
-    #     captcha_url = f'''https://www.google.com/recaptcha/api/siteverify?secret={secret_key}&response={captcha_response}&remoteip={user_ip}'''
-    #
-    #     response_data = requests.get(captcha_url).text
-    #     parsed_data = json.loads(response_data)
-    #
-    #     if parsed_data['success']:
-    #         message = "<p style='color: green;'>Your form has been submitted successfully!</p>"  # Show the user if reCAPTCHA is valid
-    #         return redirect(url_for('stats'))
-    #     else:
-    #         message = "<p style='color: red;'>Invalid reCAPTCHA</p>"  # Show error if the reCAPTCHA is invalid
-
     error = None
 
     for account in accounts:
@@ -156,3 +146,22 @@ def login():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+# message = ""
+
+    # if request.method == "POST":
+    #     secret_key = open("../../recaptcha_private_key", "r").read()
+    #     captcha_response = request.form.get("g-recaptcha-response")
+    #     user_ip = request.remote_addr
+    #
+    #     captcha_url = f'''https://www.google.com/recaptcha/api/siteverify?secret={secret_key}&response={captcha_response}&remoteip={user_ip}'''
+    #
+    #     response_data = requests.get(captcha_url).text
+    #     parsed_data = json.loads(response_data)
+    #
+    #     if parsed_data['success']:
+    #         message = "<p style='color: green;'>Your form has been submitted successfully!</p>"  # Show the user if reCAPTCHA is valid
+    #         return redirect(url_for('stats'))
+    #     else:
+    #         message = "<p style='color: red;'>Invalid reCAPTCHA</p>"  # Show error if the reCAPTCHA is invalid
