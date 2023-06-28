@@ -14,19 +14,19 @@
     {% for repos in repositories %}
     <tr>
         <td align="center">
-            {{ repos.name }}
+            <i>{{ repos.name|upper }}</i>
             {% if repos.git.startswith('https://github.com/') %}
-                <p><a href="{{ repos.git }}"><img src="{{url_for('static', filename='github-mark.png')}}"
-                width="50" height="50"/></a></p>
+                <br><a href="{{ repos.git }}"><img src="{{url_for('static', filename='github-mark.png')}}"
+                width="30" height="30"/></a>
             {% elif repos.git.startswith('https://git.savannah.gnu.org/') %}
-                <p><a href="{{ repos.git }}"><img src="{{url_for('static', filename='gnu-logo.png')}}"
-                width="50" height="50"/></a></p>
+                <br><a href="{{ repos.git }}"><img src="{{url_for('static', filename='gnu-logo.png')}}"
+                width="30" height="30"/></a>
             {% elif repos.git.startswith('https://gitlab.com/') %}
-                <p><a href="{{ repos.git }}"><img src="{{url_for('static', filename='gitlab-logo-500.png')}}"
-                width="50" height="50"/></a></p>
+                <br><a href="{{ repos.git }}"><img src="{{url_for('static', filename='gitlab-logo-500.png')}}"
+                width="30" height="30"/></a>
             {% else %}
-                <p><a href="{{ repos.git }}"><img src="{{url_for('static', filename='git-logo.png')}}"
-                width="50" height="50"/></a></p>
+                <br><a href="{{ repos.git }}"><img src="{{url_for('static', filename='git-logo.png')}}"
+                width="30" height="30"/></a>
             {% endif %}
         </td>
         <td align="left">{{ repos.description }}</td>
@@ -44,8 +44,8 @@
             <div class="container" align="center">
 	            <form method="post" action="/data">
 		        <input type="submit" value="LIKE" name={{ repos.git }}>
-		        <p>{{ repos.like }}</p>
 	            </form>
+                <br>{{ repos.like }}
             </div>
         </td>
     </tr>
