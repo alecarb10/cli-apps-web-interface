@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="notification is-danger" align="center">
+            {{ messages[0] }}
+        </div>
+    {% endif %}
+{% endwith %}
 <h1 align="center">PLEASE SIGN UP</h1>
 <br>
-<form action="" method="post">
+<form action="/sign_up" method="post">
     <table>
         <tr>
             <div class="container" align="center">
