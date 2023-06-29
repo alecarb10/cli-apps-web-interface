@@ -17,7 +17,7 @@
         <th>{{ header[5]|upper }}</th>
         <th>{{ header[6]|upper }}</th>
         <th>VOTE</th>
-    </tr>
+    </tr>  <!-- Table row with the headers -->
     {% for repos in repositories %}
     <tr>
         <td align="center">
@@ -55,7 +55,7 @@
                 <br>{{ repos.like }}
             </div>
         </td>
-    </tr>
+    </tr>  <!-- Table row with data and votes -->
     {% endfor %}
 </table>
 {% endblock %}
