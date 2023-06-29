@@ -54,6 +54,13 @@
             margin-right: 50px;
             text-decoration: none;
         }
+        #logout {
+            color: #d64161;
+            font-size: 1em;
+            text-align: right;
+            margin-right: 50px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -63,6 +70,7 @@
 </nav>
 <hr>
 <li id="login"><a href="{{ url_for('sign_up') }}">Sign up</a></li>
+<li id="logout"><a href="{{ url_for('logout') }}">Logout</a></li>
 <div class="content">
     {% block content %} {% endblock %}
 </div>
