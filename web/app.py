@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, \
-    make_response, redirect, url_for, flash
+    make_response, redirect, url_for, flash, session
 import csv
 import requests
 import json
 import base64
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -39,11 +40,18 @@ def save_users(users):
         writer.writerow(users)
 
 
-with open("../files/users.csv", "r", encoding="utf-8") as readusers:
+with open("../files/users.csv", "r") as readusers:
     reader = csv.DictReader(readusers, delimiter="\t")
     accounts = []
     for row in reader:
         accounts.append(row)
+
+
+def user_liked(liked):
+    with open("../files/user_liked.csv", "a") as likedcsv:
+        fieldnames = ['username', 'git_liked', 'timestamp']
+        writer = csv.DictWriter(likedcsv, delimiter="\t", fieldnames=fieldnames)
+        writer.writerow(liked)
 
 
 title = "Cli Apps Web Interface"
@@ -62,16 +70,20 @@ def home():
 @app.route("/data", methods=["GET", "POST"]) # Manca il salvataggio del numero di like
 def stats():
     i = 0
-    for repo in repositories:
-        if request.form.get(repo['git']) == 'LIKE':
-            repositories[i]['like'] = int(repositories[i]['like']) + 1
-            i += 1
-        else:
-            i += 1
-            pass
+
+    if request.method == "POST":
+        for repo in repositories:
+            if request.form.get(repo['git']) == 'LIKE':
+                repositories[i]['like'] = int(repositories[i]['like']) + 1
+                user_liked({"username": session['username'],
+                            "git_liked": repo['git'],
+                            "timestamp": str(datetime.now())})
+                i += 1
+            else:
+                i += 1
+                pass
 
     context = {
-        "title": title,
         "header": header,
         "repositories": repositories,
     }
@@ -101,10 +113,12 @@ def sign_up():
         if parsed_data['success']:
             for account in accounts:
                 if request.form['username'] == account['username']:
-                    # flash('Account already created')
-                    return redirect(url_for('login'))
+                    flash('Account already created')
+                    return redirect(url_for('sign_up'))
                 else:
-                    message = "<p style='color: green;'>Your account has been submitted successfully!</p>"  # Show the user if reCAPTCHA is valid
+                    session['logged_in'] = True
+                    session['username'] = request.form['username']
+                    flash('Your account has been submitted successfully!')  # Show the user if reCAPTCHA is valid
                     save_users({"username": request.form['username'],
                                 "password": encoded_psw,
                                 "timestamp": parsed_data['challenge_ts']})
@@ -132,6 +146,8 @@ def login():
                     or input_password != account['password']:
                 error = "Invalid Credentials. Please try again."
             else:
+                session['logged_in'] = True
+                session['username'] = request.form['username']
                 return redirect(url_for('stats'))
 
     context = {
@@ -143,6 +159,11 @@ def login():
 
     return resp
 
+@app.route("/logout")
+def logout():
+    session.pop('logged_in', None)
+    session.pop('username', None)
+    return redirect(url_for('home'))
 
 if __name__ == "__main__":
     app.run(debug=True)
