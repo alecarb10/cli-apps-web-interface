@@ -3,7 +3,7 @@
 {% block content %}
 <h1 align="center">PLEASE LOGIN</h1>
 <br>
-<form action="" method="post">
+<form action="/login" method="post">
     <table>
         <tr>
             <div class="container" align="center">
@@ -13,7 +13,7 @@
                 request.form.password }}">
                 <p><input class="btn btn-default" type="submit" value="Login"></p>
                 {% if error %}
-                <p class="error"><strong>Error:</strong> {{ error }}
+                <p class="error" style="color: red"><strong>{{ error }}</strong>
                 {% endif %}
             </div>
         </tr>
