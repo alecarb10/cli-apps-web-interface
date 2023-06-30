@@ -67,11 +67,11 @@ def update(repositories):
                 path = os.path.join(parent_dir, directory)
                 g = git.Repo(path)
                 g.remotes.origin.pull()
-                print(row['name'] + ': pull eseguito')
                 proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
                 output = proc.stdout.read()
                 loc = json.loads(output)
                 row['lines_of_code'] = loc['SUM']['code']
+                print(row['name'] + ': pull eseguito')
         stats(row)
 
 
