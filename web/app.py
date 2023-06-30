@@ -24,13 +24,16 @@ with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "r") 
         repositories.append(data)
 
 
-def save_like(like, fieldnames):
+def save_like(repo, like, fieldnames):
     with open("/home/ale/tesi/cli-apps-web-interface/files/stats-ridotto.csv", "w") as outfilecsv:
         writer = csv.DictWriter(outfilecsv, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
         for data in repositories:
-            data['like'] = like
-            writer.writerow(data)
+            if repo == data['git']:
+                data['like'] = like
+                writer.writerow(data)
+            else:
+                writer.writerow(data)
 
 
 def save_users(users):
@@ -54,6 +57,13 @@ def user_liked(liked):
         writer.writerow(liked)
 
 
+with open("../files/user_liked.csv", "r") as readliked:
+    reader = csv.DictReader(readliked, delimiter="\t")
+    liked = []
+    for row in reader:
+        liked.append(row)
+
+
 title = "Cli Apps Web Interface"
 
 
@@ -67,17 +77,18 @@ def home():
     return render_template("home.html", title=title)
 
 
-@app.route("/data", methods=["GET", "POST"]) # Manca il salvataggio del numero di like
+@app.route("/data", methods=["GET", "POST"])
 def stats():
     i = 0
 
     if request.method == "POST":
         for repo in repositories:
             if request.form.get(repo['git']) == 'LIKE':
-                repositories[i]['like'] = int(repositories[i]['like']) + 1
+                repo['like'] = int(repo['like']) + 1
                 user_liked({"username": session['username'],
                             "git_liked": repo['git'],
                             "timestamp": str(datetime.now())})
+                save_like(request.form.get(repo['git']), repo['like'], header)
                 i += 1
             else:
                 i += 1
@@ -88,7 +99,6 @@ def stats():
         "repositories": repositories,
     }
 
-    # save_like(repositories[i]['like'], header)
     resp = make_response(render_template("data1.html", **context))
 
     return resp
@@ -159,11 +169,13 @@ def login():
 
     return resp
 
+
 @app.route("/logout")
 def logout():
     session.pop('logged_in', None)
     session.pop('username', None)
     return redirect(url_for('home'))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
