@@ -70,7 +70,7 @@ def update(repositories):
                 proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
                 output = proc.stdout.read()
                 loc = json.loads(output)
-                row['lines_of_code'] = loc['SUM']['code']
+                row['loc'] = loc['SUM']['code']
                 print(row['name'] + ': pull eseguito')
         stats(row)
 
@@ -80,7 +80,7 @@ def main():
     args = parser.parse_args()
     repositories = load(args.outfile)
     update(repositories)
-    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like']
+    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'loc', 'description', 'like']
     save(args.outfile, repositories, fieldnames)
 
 

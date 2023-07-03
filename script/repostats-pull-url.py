@@ -76,7 +76,7 @@ def clone(repositories, url):
                         proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
                         output = proc.stdout.read()
                         loc = json.loads(output)
-                        row['lines_of_code'] = loc['SUM']['code']
+                        row['loc'] = loc['SUM']['code']
                 stats(row)
             else:
                 parent_dir = "/home/ale/tesi/cli-apps-web-interface/repositories"
@@ -87,7 +87,7 @@ def clone(repositories, url):
                 proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
                 output = proc.stdout.read()
                 loc = json.loads(output)
-                row['lines_of_code'] = loc['SUM']['code']
+                row['loc'] = loc['SUM']['code']
                 stats(row)
         else:
             next(iter(row))
@@ -103,7 +103,7 @@ def main():
     # repositories = load(filecsv)
     # url = link
     clone(repositories, url)
-    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like']
+    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'loc', 'description', 'like']
     save(args.outfile, repositories, fieldnames)
     # save(filecsv, repositories, fieldnames)
 

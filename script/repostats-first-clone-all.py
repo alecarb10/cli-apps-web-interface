@@ -20,7 +20,7 @@ def load(file_name):
         repositories = []
         for data in reader:
             repositories.append({'name': data['name'], 'git': data['git'], 'cloned': 0,
-                                 'stars': 'N', 'watch': 'N', 'fork': 'N', 'lines_of_code': 0, 'description': data['description'],
+                                 'stars': 'N', 'watch': 'N', 'fork': 'N', 'loc': 0, 'description': data['description'],
                                  'like': 0})
     return repositories
 
@@ -73,7 +73,7 @@ def clone(repositories):
                     proc = subprocess.Popen(["cloc", "--json", "--quiet", path], stdout=subprocess.PIPE)
                     output = proc.stdout.read()
                     loc = json.loads(output)
-                    row['lines_of_code'] = loc['SUM']['code']
+                    row['loc'] = loc['SUM']['code']
             stats(row)
 
 
@@ -82,7 +82,7 @@ def main():
     args = parser.parse_args()
     repositories = load(args.inputfile)
     clone(repositories)
-    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'lines_of_code', 'description', 'like']
+    fieldnames = ['name', 'git', 'cloned', 'stars', 'watch', 'fork', 'loc', 'description', 'like']
     save(args.outfile, repositories, fieldnames)
 
 
