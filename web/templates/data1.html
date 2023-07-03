@@ -12,11 +12,12 @@
     <tr>
         <th>{{ header[0]|upper }}</th>
         <th>{{ header[7]|upper }}</th>
-        <th>{{ header[3]|upper }}</th>
-        <th>{{ header[4]|upper }}</th>
-        <th>{{ header[5]|upper }}</th>
-        <th>{{ header[6]|upper }}</th>
-        <th>VOTE</th>
+<!--        <th>{{ header[3]|upper }}</th>-->
+<!--        <th>{{ header[4]|upper }}</th>-->
+<!--        <th>{{ header[5]|upper }}</th>-->
+<!--        <th>{{ header[6]|upper }}</th>-->
+        <th>STATS</th>
+<!--        <th>VOTE</th>-->
     </tr>  <!-- Table row with the headers -->
     {% for repos in repositories %}
     <tr>
@@ -35,26 +36,45 @@
                 <br><a href="{{ repos.git }}"><img src="{{url_for('static', filename='git-logo.png')}}"
                 width="30" height="30"/></a>
             {% endif %}
-        </td>
-        <td align="left">{{ repos.description }}</td>
-        <td align="center">{{ repos.stars }}</td>
-        <td align="center">{{ repos.watch }}</td>
-        <td align="center">{{ repos.fork }}</td>
-        <td align="center">
-            {% if repos.lines_of_code == '0' %}
-            N/A
-            {% else %}
-            {{ repos.lines_of_code }}
-            {% endif %}
-        </td>
-        <td>
+            <br>
             <div class="container" align="center">
+<!--                Manca da implementare la visualizzazione recaptcha per i voti non loggati-->
 	            <form method="post" action="/data">
-		        <input type="submit" value="LIKE" name="{{ repos.git }}">
+		        <br><input type="submit" value="LIKE" name="{{ repos.git }}">
 	            </form>
                 <br>{{ repos.like }}
             </div>
         </td>
+        <td align="left">{{ repos.description }}</td>
+        <td align="left">
+            {{ header[3]|upper }}: {{ repos.stars }}
+            <br>
+            {{ header[4]|upper }}: {{ repos.watch }}
+            <br>
+            {{ header[5]|upper }}: {{ repos.fork }}
+            <br>
+            {{ header[6]|upper }}: {% if repos.lines_of_code == '0' %}
+            N/A
+            {% else %}
+            {{ repos.loc }}
+            {% endif %}
+        </td>
+<!--        <td align="center">{{ repos.watch }}</td>-->
+<!--        <td align="center">{{ repos.fork }}</td>-->
+<!--        <td align="center">-->
+<!--            {% if repos.lines_of_code == '0' %}-->
+<!--            N/A-->
+<!--            {% else %}-->
+<!--            {{ repos.lines_of_code }}-->
+<!--            {% endif %}-->
+<!--        </td>-->
+<!--            <div class="container" align="center">-->
+<!--&lt;!&ndash;                Manca da implementare la visualizzazione recaptcha per i voti non loggati&ndash;&gt;-->
+<!--	            <form method="post" action="/data">-->
+<!--		        <input type="submit" value="LIKE" name="{{ repos.git }}">-->
+<!--	            </form>-->
+<!--                <br>{{ repos.like }}-->
+<!--            </div>-->
     </tr>  <!-- Table row with data and votes -->
     {% endfor %}
 </table>
