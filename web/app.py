@@ -69,6 +69,7 @@ title = "Cli Apps Web Interface"
 
 @app.route("/")
 def base():
+    session['logged_in'] = False
     return render_template("base.html", title=title)
 
 
@@ -82,17 +83,39 @@ def stats():
     i = 0
 
     if request.method == "POST":
-        for repo in repositories:
-            if request.form.get(repo['git']) == 'LIKE':
-                repo['like'] = int(repo['like']) + 1
-                user_liked({"username": session['username'],
-                            "git_liked": repo['git'],
-                            "timestamp": str(datetime.now())})
-                save_like(request.form.get(repo['git']), repo['like'], header)
-                i += 1
-            else:
-                i += 1
-                pass
+        if session['logged_in'] is True:
+            for repo in repositories:
+                if request.form.get(repo['git']) == 'LIKE':
+                    repo['like'] = int(repo['like']) + 1
+                    user_liked({"username": session['username'],
+                                "git_liked": repo['git'],
+                                "timestamp": str(datetime.now())})
+                    save_like(request.form.get(repo['git']), repo['like'], header)
+                    i += 1
+                else:
+                    i += 1
+                    pass
+        else:
+            for repo in repositories:
+                if request.form.get(repo['git']) == 'LIKE':
+                    secret_key = open("../../recaptcha_private_key", "r").read()
+                    captcha_response = request.form.get("g-recaptcha-response")
+                    user_ip = request.remote_addr
+
+                    captcha_url = f'''https://www.google.com/recaptcha/api/siteverify?secret={secret_key}&response={captcha_response}&remoteip={user_ip}'''
+
+                    response_data = requests.get(captcha_url).text
+                    parsed_data = json.loads(response_data)
+
+                    repo['like'] = int(repo['like']) + 1
+                    user_liked({"username": user_ip,
+                                "git_liked": repo['git'],
+                                "timestamp": str(datetime.now())})
+                    save_like(request.form.get(repo['git']), repo['like'], header)
+                    i += 1
+                else:
+                    i += 1
+                    pass
 
     context = {
         "header": header,
@@ -119,6 +142,7 @@ def sign_up():
 
         response_data = requests.get(captcha_url).text
         parsed_data = json.loads(response_data)
+        print(parsed_data)
 
         if parsed_data['success']:
             for account in accounts:
@@ -172,8 +196,9 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop('logged_in', None)
+    session['logged_in'] = False
     session.pop('username', None)
+    print(session)
     return redirect(url_for('home'))
 
 
