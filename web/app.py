@@ -142,7 +142,6 @@ def sign_up():
 
         response_data = requests.get(captcha_url).text
         parsed_data = json.loads(response_data)
-        print(parsed_data)
 
         if parsed_data['success']:
             for account in accounts:
@@ -198,7 +197,6 @@ def login():
 def logout():
     session['logged_in'] = False
     session.pop('username', None)
-    print(session)
     return redirect(url_for('home'))
 
 
