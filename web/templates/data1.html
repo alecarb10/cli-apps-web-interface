@@ -11,8 +11,8 @@
 <table>
     <tr>
         <th>{{ header[0]|upper }}</th>
-        <th>{{ header[7]|upper }}</th>
-        <th>STATS</th>
+        <th align="left" style="width: 800px">{{ header[7]|upper }}</th>
+        <th align="left">STATS</th>
     </tr>  <!-- Table row with the headers -->
     {% for repos in repositories %}
     <tr>
@@ -33,14 +33,18 @@
             {% endif %}
             <br>
             <div class="container" align="center">
-<!--                Manca da implementare la visualizzazione recaptcha per i voti non loggati-->
 	            <form method="post" action="/data">
-		        <br><input type="submit" value="LIKE" name="{{ repos.git }}">
-	            </form>
+                {% if session.logged_in == False %}
+                    <br><div class="g-recaptcha mt-3" align="center" data-sitekey="6Lc05LwmAAAAALx3gbBScQ4amWBlcmE1lYgEFcXl"></div>
+                    <br><input type="submit" value="LIKE" name="{{ repos.git }}"></br>
+                {% else %}
+                    <br><input type="submit" value="LIKE" name="{{ repos.git }}">
+                {% endif %}
+                </form>
                 <br>{{ repos.like }}
             </div>
         </td>
-        <td align="left">{{ repos.description }}</td>
+        <td align="left" style="width: 800px">{{ repos.description }}</td>
         <td align="left">
             {{ header[3]|upper }}: {{ repos.stars }}
             <br>

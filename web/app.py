@@ -107,12 +107,15 @@ def stats():
                     response_data = requests.get(captcha_url).text
                     parsed_data = json.loads(response_data)
 
-                    repo['like'] = int(repo['like']) + 1
-                    user_liked({"username": user_ip,
-                                "git_liked": repo['git'],
-                                "timestamp": str(datetime.now())})
-                    save_like(request.form.get(repo['git']), repo['like'], header)
-                    i += 1
+                    if parsed_data["success"] is False:
+                        flash('You dont submit the recaptcha')
+                    else:
+                        repo['like'] = int(repo['like']) + 1
+                        user_liked({"username": user_ip,
+                                    "git_liked": repo['git'],
+                                    "timestamp": str(datetime.now())})
+                        save_like(request.form.get(repo['git']), repo['like'], header)
+                        i += 1
                 else:
                     i += 1
                     pass
