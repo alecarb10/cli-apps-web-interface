@@ -17,7 +17,7 @@
     {% for repos in repositories %}
     <tr>
         <td align="center">
-            <i>{{ repos.name|upper }}</i>
+            {{ repos.name }}<br>
             {% if repos.git.startswith('https://github.com/') %}
                 <br><a href="{{ repos.git }}"><img src="{{url_for('static', filename='github-mark.png')}}"
                 width="30" height="30"/></a>

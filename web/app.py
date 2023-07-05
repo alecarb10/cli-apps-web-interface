@@ -108,7 +108,7 @@ def stats():
                     parsed_data = json.loads(response_data)
 
                     if parsed_data["success"] is False:
-                        flash('You dont submit the recaptcha')
+                        flash('You don\'t submit the reCaptcha')
                     else:
                         repo['like'] = int(repo['like']) + 1
                         user_liked({"username": user_ip,
